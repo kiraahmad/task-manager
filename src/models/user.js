@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
         minlength: 6,
         validate(value) {
             if(value.toLowerCase().includes('password')) {
-                throw new Error("Password can't be the word password");
+                throw new Error("Password can't be 'password'");
             }
         }
     },
@@ -49,6 +49,7 @@ const userSchema = new mongoose.Schema({
     }]
 });
 
+//Token generating
 userSchema.methods.generateAuthToken = async function () {
     const user = this
     const token = jwt.sign({_id: user._id.toString() }, 'thisismynewcourse');
@@ -58,6 +59,7 @@ userSchema.methods.generateAuthToken = async function () {
     return token
 }
 
+//logging in
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({ email });
 
