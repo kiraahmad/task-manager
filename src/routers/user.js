@@ -3,7 +3,7 @@ const User = require('../models/user');
 const auth = require('../middlewares/auth');
 const router = new express.Router();
 
-router.post('/users', async (req,res) => {
+router.post('/users', async (req, res) => {
     const user = new User(req.body);
     try {
         const token = await user.generateAuthToken();
@@ -14,7 +14,7 @@ router.post('/users', async (req,res) => {
     }
 });
 
-router.post('/users/login', async (req,res) => {
+router.post('/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password);
         const token = await user.generateAuthToken();
@@ -24,11 +24,35 @@ router.post('/users/login', async (req,res) => {
     }
 });
 
-router.get('/users/me', auth, async (req,res) => {
+router.post('/users/logout', auth, async (req, res) => {
+    try {
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token
+        });
+        await req.user.save();
+
+        res.send();
+    } catch(e) {
+        res.status(500).send();
+    }
+});
+
+router.post('/users/logoutall', auth, async(req, res) => {
+    try {
+        req.user.tokens = []
+        await req.user.save();
+
+        res.send()
+    } catch(e) {
+        res.status(500).send()
+    }
+});
+
+router.get('/users/me', auth, async (req, res) => {
     res.send(req.user);
 });
 
-router.get('/users/:id', async (req,res) => {
+router.get('/users/:id', async (req, res) => {
     const _id = req.params.id
     try {
         const user = await User.findById(_id)
@@ -41,7 +65,7 @@ router.get('/users/:id', async (req,res) => {
     }
 });
 
-router.patch('/users/:id', async (req,res) => {
+router.patch('/users/:id', async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['name', 'email', 'age', 'password']
     const isValidUpdate = updates.every((update) => allowedUpdates.includes(update));
@@ -64,7 +88,7 @@ router.patch('/users/:id', async (req,res) => {
     }
 });
 
-router.delete('/users/:id', async (req,res) => {
+router.delete('/users/:id', async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
         if(!user) {
