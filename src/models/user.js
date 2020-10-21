@@ -49,6 +49,17 @@ const userSchema = new mongoose.Schema({
     }]
 });
 
+//Getting raw data exluding the data from mongoose
+userSchema.methods.toJSON = function () {
+    const user = this
+    const userObject = user.toObject()
+
+    delete userObject.password
+    delete userObject.tokens
+
+    return userObject
+}
+
 //Token generating
 userSchema.methods.generateAuthToken = async function () {
     const user = this
