@@ -1,5 +1,4 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const Task = require('../models/task');
 const auth = require('../middlewares/auth');
 const router = new express.Router();
