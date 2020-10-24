@@ -49,6 +49,13 @@ const userSchema = new mongoose.Schema({
     }]
 });
 
+//Setting up relationship between the user and task
+userSchema.virtual('tasks', {
+    ref: 'Tasks',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
 //Getting raw data excluding the data from mongoose
 userSchema.methods.toJSON = function () {
     const user = this
