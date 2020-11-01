@@ -92,7 +92,7 @@ const upload = multer({
     }
 });
 
-//upload a profile picture
+//upload a profile picture for users
 router.post('/users/me/avatar', auth, upload.single('avatar'), async (req,res) => {
     req.user.avatar = req.file.buffer
     await req.user.save()
@@ -101,7 +101,7 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async (req,res) =
     res.status(400).send({error: error.message});
 });
 
-//delete a profile picture
+//delete a profile picture for users
 router.delete('/users/me/avatar', auth, async (req, res) => {
     req.user.avatar = undefined
     await req.user.save();
