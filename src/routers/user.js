@@ -92,15 +92,6 @@ const upload = multer({
     }
 });
 
-//upload a profile picture for users
-router.post('/users/me/avatar', auth, upload.single('avatar'), async (req,res) => {
-    req.user.avatar = req.file.buffer
-    await req.user.save()
-    res.send()
-}, (error, req, res, next) => {
-    res.status(400).send({error: error.message});
-});
-
 //delete a profile picture for users
 router.delete('/users/me/avatar', auth, async (req, res) => {
     req.user.avatar = undefined
