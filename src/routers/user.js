@@ -79,8 +79,7 @@ router.delete('/users/me',auth, async (req, res) => {
         sendCancelationEmail(req.user.email, req.user.name);
         res.send(req.user);
     } catch(e) {
-        res.status(500).send(e)
-        console.log(e);
+        res.status(500).send()
     }
 });
 
@@ -88,12 +87,12 @@ const upload = multer({
     limits: {
         fileSize: 1000000
     },
-    fileFilter(req, file, cd) {
+    fileFilter(req, file, cb) {
         if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-            return cd(new Error('Please upload a JPG, JPEG or PNG file'));
+            return cb(new Error('Please upload a JPG, JPEG or PNG file'));
         }
 
-        cd(undefined, true);
+        cb(undefined, true);
     }
 });
 
